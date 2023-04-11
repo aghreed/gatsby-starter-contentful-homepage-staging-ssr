@@ -6,7 +6,9 @@ import Fallback from "../components/fallback"
 import SEOHead from "../components/head"
 
 export default function About(props) {
-  const { aboutPage } = props.data
+  const { aboutPage, serverData } = props.data
+
+  console.log("serverData: ", serverData)
 
   return (
     <Layout>
@@ -74,3 +76,23 @@ export const query = graphql`
     }
   }
 `
+
+export async function getServerData() {
+  try {
+    const res = await fetch(`https://dog.ceo/api/breeds/image/random`)
+
+    if (!res.ok) {
+      throw new Error(`Response failed`)
+    }
+
+    return {
+      props: await res.json(),
+    }
+  } catch (error) {
+    return {
+      status: 500,
+      headers: {},
+      props: {}
+    }
+  }
+}
